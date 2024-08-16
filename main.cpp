@@ -11,6 +11,11 @@ int main()
   Player p{player_name};
   std::cout << "Welcome, " << p.get_name() << "." << std::endl;
   std::cout << p;
+
+  for (int i{}; i < 10; ++i) {
+    Monster m{Monster::get_random_monster()};
+    std::cout << m;
+  }
   
   return 0;
 }

@@ -1,6 +1,7 @@
 #ifndef CREATURE_H
 #define CREATURE_H
 
+#include "Random.h"
 #include <iostream>
 #include <string>
 #include <map>
@@ -17,7 +18,7 @@ public:
   Creature() = default;
   Creature(const std::string & name, char sym, int health, int damage, int gold) 
         : m_name{name}
-        , m_sym({sym}
+        , m_sym{sym}
         , m_health{health}
         , m_damage{damage}
         , m_gold{gold} {
@@ -27,7 +28,7 @@ public:
     return m_name;
   }
 
-  char get_char() const {
+  char get_sym() const {
     return m_sym;
   }
 
@@ -89,22 +90,28 @@ public:
   enum class MonsterType{
     Dragon,
     Orc,
-    Slime,
-    MaxTypes
+    Slime
   };
 
 private:
-    inline static std::map<MonsterType, Creature> monsterData[] {
-      Creature {"dragon", 'D', 20, 4, 100},
-      Creature {"orc", 'o', 4, 2, 25},
-      Creature {"slime", 's', 1, 1, 10}
+  inline static std::map<MonsterType, Creature> monsterData = {
+      {MonsterType::Dragon, Creature {"dragon", 'd', 20, 4, 100}},
+      {MonsterType::Orc, Creature {"orc", 'o', 4, 2, 25}},
+      {MonsterType::Slime, Creature {"slime", 's', 1, 1, 10}}
     };
 
-    static_assert(std::size(monsterData) == max_types);
-
 public:
-    Monster(const MonsterType & mt) : Creature{monsterData[mt]} {
+  Monster(const MonsterType & mt) : Creature{monsterData.at(mt)} {
     }
+
+  friend std::ostream & operator<<(std::ostream & os, const Monster & m) {
+    os << "Monster " << m.get_name() << " appeared in front of you!" << std::endl;
+    return os;
+  }
+
+  static Monster get_random_monster() {
+    return Monster(static_cast<MonsterType>(Random::get(0, monsterData.size() - 1)));
+  }
 };
 
 #endif // CREATURE_H
